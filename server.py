@@ -1,28 +1,29 @@
-map = [[0 for i in range(10)] for j in range(10)]
+from socket import *
 
-x = 3
-y = 3
+HOST = ''
+PORT = 5007
 
-map[x][y] = 1
+s = socket(AF_INET, SOCK_STREAM)
 
-def print_map():
-    text = ""
-    for i in map:
-        for j in i:
-            text += f"{j} "
-        text += "\n"
-    return text
+s.bind((HOST, PORT))
 
-def move(input):
-    global x, y
-    map[x][y] = 0
-    if input == "w" and x > 0:
-        x -= 1
-    if input == "s" and x < 9:
-        x += 1
-    if input == "a" and y > 0:
-        y -= 1
-    if input == "d" and y < 9:
-        y += 1
-    map[x][y] = 1
+print(f"socket: {s}")
 
+s.listen(5)
+
+# the code example in the lecture was throwing an OSerror 22: Invalid argument
+# based in this link: https://docs.python.org/3/howto/sockets.html
+# im trying to resolve this telling the server to queue requests before connecting
+(conn, addr) = s.accept()
+
+
+while True:
+    data = conn.recv(1024)
+    
+    if not data: break
+    
+    msg = data.decode()+'\nHello Client!'
+    
+    conn.send(msg.encode())
+    conn.close()
+    
