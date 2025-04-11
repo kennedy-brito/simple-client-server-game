@@ -9,33 +9,33 @@ Game Commands:
 \tc: Quit the game
 """
 
-HOST = ''
-PORT = 5007
-
-while True:
-  
-  # Investigate further:
-  #   when i place the socket and the connect outside the loop
-  #   the input is not received? i do not understand way this happens
-  # How i resolved this?
-  #   I placed the socket and connection in the loop
-  # Why i think this is bad?
-  #   Because i have to recreate the socket AND the connection
-  #   I think this is bad for performance
-  #   How can i use a continuous connection? Maybe use a protocol different from TCP?
-  # link that i used as a reference: https://stackoverflow.com/questions/15958026/getting-errno-9-bad-file-descriptor-in-python-socket
-  s = socket(AF_INET, SOCK_STREAM)
-  s.connect((HOST, PORT))
-  command = input(COMMANDS)
-  command = command.lower()
-
-  if command == "c": 
+def client(host, port):
+  while True:
     
-    break
+    # Investigate further:
+    #   when i place the socket and the connect outside the loop
+    #   the input is not received? i do not understand way this happens
+    # How i resolved this?
+    #   I placed the socket and connection in the loop
+    # Why i think this is bad?
+    #   Because i have to recreate the socket AND the connection
+    #   I think this is bad for performance
+    #   How can i use a continuous connection? Maybe use a protocol different from TCP?
+    # link that i used as a reference: https://stackoverflow.com/questions/15958026/getting-errno-9-bad-file-descriptor-in-python-socket
+    
+    s = socket(AF_INET, SOCK_STREAM)
+    s.connect((host, port))
+    
+    command = input(COMMANDS)
+    command = command.lower()
 
-  s.send(command.encode())
+    if command == "c": 
+      
+      break
 
-  data = s.recv(1024)
+    s.send(command.encode())
 
-  print(data.decode())
-  s.close()
+    data = s.recv(1024)
+
+    print(data.decode())
+    s.close()
