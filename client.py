@@ -1,5 +1,8 @@
 from socket import *
 
+HOST = ''
+PORT = 5007
+
 s = socket(AF_INET, SOCK_STREAM)
 
 s.connect((HOST, PORT))
