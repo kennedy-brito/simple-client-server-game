@@ -1,4 +1,5 @@
 from socket import *
+from game import Game
 
 HOST = ''
 PORT = 5007
@@ -9,24 +10,27 @@ s.bind((HOST, PORT))
 
 print(f"socket: {s}")
 
-s.listen(5)
-
 # the code example in the lecture was throwing an OSerror 22: Invalid argument
 # when `s.accept()` was called
 # based in this link: https://docs.python.org/3/howto/sockets.html
-# im trying to resolve this telling the server to queue requests before connecting
+# im trying to resolve this telling the server to queue requests before connecting: this way it was resolved
+s.listen()
 
-# TODO: It doesn't end successfuly when using CTRL-C, it kills the access but the port continues in use
-
+game = Game()
 while True:
+    print("Waiting for client command")
     (conn, addr) = s.accept()
     data = conn.recv(1024)
     
-    if not data: break
+    if not data: 
+        conn.close()
+        break
+    command = data.decode()
     
-    print(data.decode())
-    msg = data.decode()+'\nHello Client!'
+    print(command + " was the client command!")
     
-    conn.send(msg.encode())
-    conn.close()
+    game.move(command)
     
+    map = game.print_map()
+    
+    conn.send(map.encode())
